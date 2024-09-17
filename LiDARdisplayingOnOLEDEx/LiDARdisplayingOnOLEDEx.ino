@@ -3,10 +3,17 @@
 #include <TFLI2C.h>      // TFLuna-I2C Library v.0.1.1
 #include <M5UnitOLED.h>
 
+#define ADJUSTMENT_MULTIPLIER 1.0
+
 M5UnitOLED display;
 M5Canvas canvas(&display);
 
 TFLI2C tflI2C;
+
+int speedAdjustPin = A0;
+int speedAdjustInt = 0;
+double speedAdjust = 0.0;
+int speedAdjustInt = 0;
 
 // Define the size of the 2D array
 const int arrayWidth = 60;
@@ -44,10 +51,16 @@ void setup(){
 void loop(){
 
   Serial.println("Looping...");
+  speedAdjust = analogRead(speedAdjustPin);
+  speedAdjust = speedAdjust * ADJUSTMENT_MULTIPLIER;
+  speedAdjustInt = (int)speedAdjust;
+  Serial.println(speedAdjust);
+
   
-  for (int i=0; i<360; i++) {
+  
+  for (int i=0; i<speedAdjust; i++) {
     if(tflI2C.getData(tfDist, tfAddr)){
-      Serial.println(String(tfDist)+" cm");
+      //Serial.println(String(tfDist)+" cm");
       
       if (tfDist < 8000 && tfDist > 5) {
         int x = (tfDist * cos(i*3.14159/180)) / 20;
@@ -98,7 +111,7 @@ void fillSampleData() {
       lidarData[i][j] = 0; // Fill with white pixels
     }
   }
-  Serial.println("Sample data filled.");
+  Serial.println("Screen cleared.");
 }
 
 void drawSquare() {
