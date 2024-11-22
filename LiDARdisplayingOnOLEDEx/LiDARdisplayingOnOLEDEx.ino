@@ -3,7 +3,7 @@
 #include <TFLI2C.h>      // TFLuna-I2C Library v.0.1.1
 #include <M5UnitOLED.h>
 
-#define ADJUSTMENT_MULTIPLIER 1.0
+#define ADJUSTMENT_MULTIPLIER 0.1
 
 M5UnitOLED display;
 M5Canvas canvas(&display);
@@ -11,7 +11,6 @@ M5Canvas canvas(&display);
 TFLI2C tflI2C;
 
 int speedAdjustPin = A0;
-int speedAdjustInt = 0;
 double speedAdjust = 0.0;
 int speedAdjustInt = 0;
 
@@ -56,11 +55,15 @@ void loop(){
   speedAdjustInt = (int)speedAdjust;
   Serial.println(speedAdjust);
 
+  Serial.println(String(tfDist)+" cm");
   
-  
-  for (int i=0; i<speedAdjust; i++) {
+  for (int i=0; i<40; i++) {
+    //Serial.println("Start");
+    //Serial.println(millis());
+
+
     if(tflI2C.getData(tfDist, tfAddr)){
-      //Serial.println(String(tfDist)+" cm");
+      
       
       if (tfDist < 8000 && tfDist > 5) {
         int x = (tfDist * cos(i*3.14159/180)) / 20;
@@ -76,7 +79,11 @@ void loop(){
       }
       
     } 
-    delay(2);
+
+    //Serial.println(millis());
+    //Serial.println("End");
+
+
 
   }
 
